@@ -1,4 +1,5 @@
-import 'package:bus_location/views/admin/admin_home_page.dart';
+import 'package:bus_location/core/consts.dart';
+import 'package:bus_location/views/register_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -16,10 +17,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: primaryColor),
         useMaterial3: true,
       ),
-      home: const AdminHomePage(),
+      home: const RegisterPage(),
     );
   }
 }
