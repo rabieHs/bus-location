@@ -1,16 +1,34 @@
 import 'package:bus_location/entities/user.dart';
 
 class Driver extends User {
+  final bool isVerified;
   Driver({
-    required super.id,
+    this.isVerified = false,
+    super.id,
     required super.name,
     required super.lastname,
     required super.email,
     super.type = "driver",
   });
-}
 
-// user type 
-/// client => client
-/// admin ==> admin
-/// driver
+  factory Driver.fromMap(Map<String, dynamic> map) {
+    return Driver(
+        type: map["type"],
+        isVerified: map["isVerified"],
+        id: map["id"],
+        name: map["name"],
+        lastname: map["lastname"],
+        email: map["email"]);
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      "id": id,
+      "name": name,
+      "lastname": lastname,
+      "email": email,
+      "type": type,
+      "isVerfied": isVerified
+    };
+  }
+}

@@ -1,27 +1,26 @@
 import 'package:bus_location/database/athentication.dart';
 import 'package:bus_location/models/admin.dart';
-import 'package:bus_location/models/driver.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class DriversPage extends StatefulWidget {
-  const DriversPage({super.key});
+class AdminsPage extends StatefulWidget {
+  AdminsPage({super.key});
 
   @override
-  State<DriversPage> createState() => _DriversPageState();
+  State<AdminsPage> createState() => _AdminsPageState();
 }
 
-class _DriversPageState extends State<DriversPage> {
+class _AdminsPageState extends State<AdminsPage> {
   Stream<QuerySnapshot<Map<String, dynamic>>>? getAdminStream;
 
-  streamDrivers() async {
-    getAdminStream = await DatabaseAuthentication().getUsers("driver");
+  streamAdmins() async {
+    getAdminStream = await DatabaseAuthentication().getUsers("admin");
     setState(() {});
   }
 
   @override
   void initState() {
-    streamDrivers();
+    streamAdmins();
     super.initState();
   }
 
@@ -72,65 +71,60 @@ class _DriversPageState extends State<DriversPage> {
                     child: Text("error occured !"),
                   );
                 }
-                if (result.data == null) {
+                if (result.data == null || result.data!.docs.isEmpty) {
                   return Center(
                     child: CircularProgressIndicator(),
                   );
-                }
-                if (result.data!.docs.isEmpty) {
-                  return Center(
-                    child: Text("there is no drivers"),
-                  );
                 } else {
-                  List<Driver> drivers = result.data!.docs.map((doc) {
-                    return Driver.fromMap(doc.data());
+                  List<Admin> admins = result.data!.docs.map((doc) {
+                    return Admin.fromMap(doc.data());
                   }).toList();
 
                   return ListView.builder(
                       shrinkWrap: true,
-                      itemCount: drivers.length,
+                      itemCount: admins.length,
                       itemBuilder: (context, index) {
-                        Driver driver = drivers[index];
+                        Admin admin = admins[index];
                         return ListTile(
                           onTap: () {
                             showDialog(
                                 context: context,
                                 builder: (context) => AlertDialog(
-                                      title: Center(child: Text(driver.name)),
+                                      title: Center(child: Text(admin.name)),
                                       content: Text(
-                                          "You can accept or reject any driver "),
+                                          "You can accept or reject any admin "),
                                       actionsAlignment:
                                           MainAxisAlignment.center,
                                       actions: [
                                         MaterialButton(
                                           enableFeedback: false,
-                                          onPressed: !driver.isVerified
+                                          onPressed: !admin.isVerified
                                               ? null
                                               : () {
                                                   DatabaseAuthentication()
                                                       .rejectAdminDriver(
-                                                          context, driver);
+                                                          context, admin);
                                                 },
                                           child: Text(
                                             "reject",
                                             style: TextStyle(
-                                                color: !driver.isVerified
+                                                color: !admin.isVerified
                                                     ? Colors.grey
                                                     : Colors.red),
                                           ),
                                         ),
                                         MaterialButton(
-                                          onPressed: driver.isVerified
+                                          onPressed: admin.isVerified
                                               ? null
                                               : () {
                                                   DatabaseAuthentication()
                                                       .acceptAdminDriver(
-                                                          context, driver);
+                                                          context, admin);
                                                 },
                                           child: Text(
                                             "accept",
                                             style: TextStyle(
-                                                color: driver.isVerified
+                                                color: admin.isVerified
                                                     ? Colors.grey
                                                     : Colors.green),
                                           ),
@@ -139,12 +133,12 @@ class _DriversPageState extends State<DriversPage> {
                                     ));
                           },
                           leading: Icon(Icons.person),
-                          title: Text(driver.name),
-                          subtitle: Text(driver.email),
+                          title: Text(admin.name),
+                          subtitle: Text(admin.email),
                           trailing: CircleAvatar(
                             radius: 6,
                             backgroundColor:
-                                driver.isVerified ? Colors.green : Colors.red,
+                                admin.isVerified ? Colors.green : Colors.red,
                           ),
                         );
                       });
