@@ -1,23 +1,48 @@
+import 'dart:io';
+
 import 'package:bus_location/core/communMethods.dart';
 import 'package:bus_location/entities/bus.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 class DatabaseBus {
   final _auth = auth.FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
-  Future<void> addBus(BuildContext context, double fee, String type,
-      String energy, String id, String description, String? driverId) async {
-    final Bus bus = Bus(
-        description: description,
-        id: id,
-        fee: fee,
-        type: type,
-        energy: energy,
-        driver_id: driverId);
+  final _storage = FirebaseStorage.instance;
+  Future<void> addBus(
+      BuildContext context,
+      double fee,
+      String type,
+      String energy,
+      String id,
+      String description,
+      String? driverId,
+      List<File>? images) async {
+    List<String> busImages = [];
 
     try {
+      if (images != null) {
+        print("images not null");
+        for (File image in images) {
+          final ref = _storage.ref().child("${Uuid().v4()}.jpg");
+          final taskSnapshot = await ref.putFile(image);
+          final downloadUrl = await taskSnapshot.ref.getDownloadURL();
+          print(downloadUrl);
+          busImages.add(downloadUrl);
+        }
+      }
+
+      final Bus bus = Bus(
+          description: description,
+          id: id,
+          fee: fee,
+          type: type,
+          energy: energy,
+          driver_id: driverId,
+          images: busImages);
       await _firestore
           .collection("bus")
           .doc(id)
@@ -27,6 +52,7 @@ class DatabaseBus {
         showSuccessMessage(context, "Bus added successfully");
       });
     } catch (e) {
+      print(e);
       showErrorMessage(context, "an error occured");
     }
   }
@@ -43,17 +69,35 @@ class DatabaseBus {
         .snapshots();
   }
 
-  Future<void> updateBus(BuildContext context, double fee, String type,
-      String energy, String id, String description, String? driverId) async {
-    final Bus bus = Bus(
-        description: description,
-        id: id,
-        fee: fee,
-        type: type,
-        energy: energy,
-        driver_id: driverId);
-
+  Future<void> updateBus(
+      BuildContext context,
+      double fee,
+      String type,
+      String energy,
+      String id,
+      String description,
+      String? driverId,
+      List oldImages,
+      List<File> images) async {
     try {
+      List<String> busImages = [];
+      if (images != null) {
+        for (File image in images) {
+          final ref = _storage.ref().child("${Uuid().v4()}.jpg");
+          final taskSnapshot = await ref.putFile(image);
+          final downloadUrl = await taskSnapshot.ref.getDownloadURL();
+          print(downloadUrl);
+          busImages.add(downloadUrl);
+        }
+      }
+      final Bus bus = Bus(
+          description: description,
+          id: id,
+          fee: fee,
+          type: type,
+          energy: energy,
+          driver_id: driverId,
+          images: busImages.isEmpty ? oldImages : busImages);
       await _firestore
           .collection("bus")
           .doc(id)

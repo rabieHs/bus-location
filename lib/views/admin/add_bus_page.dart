@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bus_location/core/communMethods.dart';
 import 'package:bus_location/database/athentication.dart';
 import 'package:bus_location/database/database_bus.dart';
@@ -23,6 +25,8 @@ class _AddBusPageState extends State<AddBusPage> {
   String? busType;
   String? driver;
   List<Driver> drivers = [];
+
+  List<File> images = [];
 
   getDrivers() async {
     drivers = await DatabaseAuthentication().getDriverList();
@@ -132,7 +136,7 @@ class _AddBusPageState extends State<AddBusPage> {
                       items: const [
                         DropdownMenuItem(
                           child: Text("Mini "),
-                          value: "mini Bus",
+                          value: "mini",
                         ),
                         DropdownMenuItem(
                           value: "meduim",
@@ -194,32 +198,77 @@ class _AddBusPageState extends State<AddBusPage> {
                     height: 15,
                   ),
 
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 150,
-                    decoration: BoxDecoration(
-                        border: Border.all(width: 1, color: Colors.grey),
-                        borderRadius: BorderRadius.circular(15)),
-                    child: Center(
-                      child: GestureDetector(
-                        onTap: () async {
-                          await ImagePicker()
-                              .pickImage(source: ImageSource.camera);
-                        },
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.add_a_photo_outlined,
-                              size: 60,
-                              weight: 0.2,
+                  images.isEmpty
+                      ? Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 150,
+                          decoration: BoxDecoration(
+                              border: Border.all(width: 1, color: Colors.grey),
+                              borderRadius: BorderRadius.circular(15)),
+                          child: Center(
+                            child: GestureDetector(
+                              onTap: () async {
+                                final _images =
+                                    await ImagePicker().pickMultiImage();
+                                setState(() {
+                                  images = _images
+                                      .map((image) => File(image.path))
+                                      .toList();
+                                });
+                              },
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.add_a_photo_outlined,
+                                    size: 60,
+                                    weight: 0.2,
+                                  ),
+                                  Text('Add images')
+                                ],
+                              ),
                             ),
-                            Text('Add images')
-                          ],
+                          ),
+                        )
+                      : Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 150,
+                          decoration: BoxDecoration(
+                              border: Border.all(width: 1, color: Colors.grey),
+                              borderRadius: BorderRadius.circular(15)),
+                          child: Center(
+                            child: GestureDetector(
+                                onTap: () async {
+                                  final _images =
+                                      await ImagePicker().pickMultiImage();
+                                  setState(() {
+                                    images = _images
+                                        .map((image) => File(image.path))
+                                        .toList();
+                                  });
+                                },
+                                child: GridView.builder(
+                                    padding: EdgeInsets.all(10),
+                                    itemCount: images.length,
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 3,
+                                            childAspectRatio: 1,
+                                            mainAxisSpacing: 5,
+                                            crossAxisSpacing: 5),
+                                    shrinkWrap: true,
+                                    itemBuilder: ((context, index) {
+                                      return Container(
+                                        // color: Colors.green,
+
+                                        child: Image.file(
+                                          images[index],
+                                          fit: BoxFit.cover,
+                                        ),
+                                      );
+                                    }))),
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
                   const SizedBox(
                     height: 15,
                   ),
@@ -239,7 +288,8 @@ class _AddBusPageState extends State<AddBusPage> {
                                 energyController.text,
                                 idController.text,
                                 descriptionController.text,
-                                driver)
+                                driver,
+                                images)
                             .whenComplete(() => Navigator.pop(context));
                       }
                     },

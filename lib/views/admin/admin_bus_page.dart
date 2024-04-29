@@ -1,6 +1,7 @@
 import 'package:bus_location/database/database_bus.dart';
 import 'package:bus_location/entities/bus.dart';
 import 'package:bus_location/views/admin/add_bus_page.dart';
+import 'package:bus_location/views/admin/update_bus_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -49,52 +50,79 @@ class _AdminBusPageState extends State<AdminBusPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-              width: 280,
-              height: 50,
-              //width: MediaQuery.of(context).size.width,
-              child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: busFilterTypes.length,
-                  itemBuilder: ((context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: GestureDetector(
-                        onTap: () async {
-                          selectedIndex = index;
-                          if (index == 0) {
-                            getBusStream = await DatabaseBus().getBus();
-                          } else {
-                            getBusStream = await DatabaseBus()
-                                .getBusWithFilter(busFilterTypes[index]);
-                          }
-                          setState(() {});
-                        },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 10),
-                          decoration: BoxDecoration(
-                              border: index == selectedIndex
-                                  ? null
-                                  : Border.all(
-                                      width: 1.5, color: Colors.orange),
-                              color: index == selectedIndex
-                                  ? Colors.orange
-                                  : Colors.white,
-                              borderRadius: BorderRadius.circular(5)),
-                          height: 30,
-                          child: Center(
-                            child: Text(
-                              busFilterTypes[index],
-                              style: TextStyle(
-                                color: index == selectedIndex
-                                    ? Colors.white
-                                    : Colors.orange,
-                              ),
-                            ),
+            width: 280,
+            height: 50,
+            //width: MediaQuery.of(context).size.width,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: busFilterTypes.length,
+              itemBuilder: ((context, index) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GestureDetector(
+                    onTap: () async {
+                      selectedIndex = index;
+                      if (index == 0) {
+                        getBusStream = await DatabaseBus().getBus();
+                      } else {
+                        getBusStream = await DatabaseBus()
+                            .getBusWithFilter(busFilterTypes[index]);
+                      }
+                      setState(() {});
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                          border: index == selectedIndex
+                              ? null
+                              : Border.all(width: 1.5, color: Colors.orange),
+                          color: index == selectedIndex
+                              ? Colors.orange
+                              : Colors.white,
+                          borderRadius: BorderRadius.circular(5)),
+                      height: 30,
+                      child: Center(
+                        child: Text(
+                          busFilterTypes[index],
+                          style: TextStyle(
+                            color: index == selectedIndex
+                                ? Colors.white
+                                : Colors.orange,
                           ),
                         ),
                       ),
-                    );
-                  }))),
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+          Container(
+            height: 40,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Row(
+                  children: [
+                    Text("waiting for rent"),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    CircleAvatar(radius: 5, backgroundColor: Colors.yellow),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text("rented"),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    CircleAvatar(radius: 5, backgroundColor: Colors.green),
+                  ],
+                ),
+              ],
+            ),
+          ),
           selectedIndex != 0
               ? StreamBuilder(
                   stream: getBusStream,
@@ -130,29 +158,51 @@ class _AdminBusPageState extends State<AdminBusPage> {
                                               MainAxisAlignment.center,
                                           actions: [
                                             MaterialButton(
-                                              onPressed: () {},
+                                              onPressed: () async {
+                                                await DatabaseBus()
+                                                    .deleteBus(context, bus.id);
+                                              },
                                               child: Text(
-                                                "reject",
+                                                "delete",
                                                 style: TextStyle(
                                                     color: Colors.red),
                                               ),
                                             ),
                                             MaterialButton(
-                                              onPressed: () {},
+                                              onPressed: () {
+                                                Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            UpdateBusPage(
+                                                                bus: bus)));
+                                              },
                                               child: Text(
-                                                "accept",
+                                                "update",
                                                 style: TextStyle(
-                                                    color: Colors.green),
+                                                    color: Colors.orange),
                                               ),
                                             ),
                                           ],
                                         ));
                               },
-                              leading: Icon(Icons.person),
+                              leading: bus.images!.isEmpty
+                                  ? Icon(
+                                      Icons.bus_alert,
+                                      size: 40,
+                                    )
+                                  : Image.network(
+                                      bus.images!.first,
+                                      width: 40,
+                                      fit: BoxFit.cover,
+                                    ),
                               title: Text(bus.id),
                               subtitle: Text(bus.status),
                               trailing: CircleAvatar(
-                                  radius: 6, backgroundColor: Colors.green),
+                                  radius: 6,
+                                  backgroundColor:
+                                      bus.status == "waiting for rent"
+                                          ? Colors.yellow
+                                          : Colors.green),
                             );
                           });
                     }
@@ -191,29 +241,51 @@ class _AdminBusPageState extends State<AdminBusPage> {
                                               MainAxisAlignment.center,
                                           actions: [
                                             MaterialButton(
-                                              onPressed: () {},
+                                              onPressed: () async {
+                                                await DatabaseBus()
+                                                    .deleteBus(context, bus.id);
+                                              },
                                               child: Text(
-                                                "reject",
+                                                "delete",
                                                 style: TextStyle(
                                                     color: Colors.red),
                                               ),
                                             ),
                                             MaterialButton(
-                                              onPressed: () {},
+                                              onPressed: () {
+                                                Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            UpdateBusPage(
+                                                                bus: bus)));
+                                              },
                                               child: Text(
-                                                "accept",
+                                                "update",
                                                 style: TextStyle(
-                                                    color: Colors.green),
+                                                    color: Colors.orange),
                                               ),
                                             ),
                                           ],
                                         ));
                               },
-                              leading: Icon(Icons.person),
+                              leading: bus.images!.isEmpty
+                                  ? Icon(
+                                      Icons.bus_alert,
+                                      size: 40,
+                                    )
+                                  : Image.network(
+                                      bus.images!.first,
+                                      width: 40,
+                                      fit: BoxFit.cover,
+                                    ),
                               title: Text(bus.id),
                               subtitle: Text(bus.status),
                               trailing: CircleAvatar(
-                                  radius: 6, backgroundColor: Colors.green),
+                                  radius: 6,
+                                  backgroundColor:
+                                      bus.status == "waiting for rent"
+                                          ? Colors.yellow
+                                          : Colors.green),
                             );
                           });
                     }
