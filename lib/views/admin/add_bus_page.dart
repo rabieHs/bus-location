@@ -2,6 +2,7 @@ import 'package:bus_location/core/communMethods.dart';
 import 'package:bus_location/database/athentication.dart';
 import 'package:bus_location/database/database_bus.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../core/consts.dart';
 import '../../models/driver.dart';
@@ -75,35 +76,47 @@ class _AddBusPageState extends State<AddBusPage> {
                   const SizedBox(
                     height: 10,
                   ),
-                  TextFormField(
-                    validator: (valeur) {
-                      if (valeur == null || valeur.isEmpty) {
-                        return "please fill the field !";
-                      }
-                    },
-                    controller: feeController,
-                    decoration: InputDecoration(
-                        labelText: "Fee",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        )),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            validator: (valeur) {
+                              if (valeur == null || valeur.isEmpty) {
+                                return "please fill the field !";
+                              }
+                            },
+                            controller: feeController,
+                            decoration: InputDecoration(
+                                labelText: "Fee",
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                )),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          child: TextFormField(
+                            validator: (valeur) {
+                              if (valeur == null || valeur.isEmpty) {
+                                return "please fill the field !";
+                              }
+                            },
+                            controller: energyController,
+                            decoration: InputDecoration(
+                                labelText: "Energy",
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                )),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  TextFormField(
-                    validator: (valeur) {
-                      if (valeur == null || valeur.isEmpty) {
-                        return "please fill the field !";
-                      }
-                    },
-                    controller: energyController,
-                    decoration: InputDecoration(
-                        labelText: "Energy",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        )),
-                  ),
+
                   const SizedBox(
                     height: 10,
                   ),
@@ -176,6 +189,36 @@ class _AddBusPageState extends State<AddBusPage> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
                         )),
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 150,
+                    decoration: BoxDecoration(
+                        border: Border.all(width: 1, color: Colors.grey),
+                        borderRadius: BorderRadius.circular(15)),
+                    child: Center(
+                      child: GestureDetector(
+                        onTap: () async {
+                          await ImagePicker()
+                              .pickImage(source: ImageSource.camera);
+                        },
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.add_a_photo_outlined,
+                              size: 60,
+                              weight: 0.2,
+                            ),
+                            Text('Add images')
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                   const SizedBox(
                     height: 15,

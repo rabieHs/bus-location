@@ -1,6 +1,7 @@
 import 'package:bus_location/core/consts.dart';
 import 'package:bus_location/database/athentication.dart';
 import 'package:bus_location/entities/user.dart';
+import 'package:bus_location/firebase_options.dart';
 import 'package:bus_location/models/admin.dart';
 import 'package:bus_location/models/driver.dart';
 import 'package:bus_location/views/admin/admin_home_page.dart';
@@ -14,7 +15,7 @@ import 'package:flutter/material.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 
