@@ -106,8 +106,6 @@ class _ClientHistoryPageState extends State<ClientHistoryPage> {
                     return Rental.fromMap(doc.data());
                   }).toList();
 
-                  print(rentralList.first.id);
-
                   return ListView.builder(
                       shrinkWrap: true,
                       itemCount: rentralList.length,

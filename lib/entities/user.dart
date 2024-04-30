@@ -1,9 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class User {
   String? id;
-  final String name;
-  final String lastname;
-  final String email;
+  String name;
+  String lastname;
+  String email;
   final String type;
 
   User({

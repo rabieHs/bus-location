@@ -7,6 +7,7 @@ import 'package:bus_location/models/client.dart';
 import 'package:bus_location/models/driver.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+
 import 'package:flutter/material.dart';
 
 class DatabaseAuthentication {
@@ -128,6 +129,67 @@ class DatabaseAuthentication {
         .update({"isVerified": false}).then((value) {
       Navigator.pop(context);
       showSuccessMessage(context, "${user.name} was rejected successfully ");
+    });
+  }
+
+  void updateClient(Client client, BuildContext context) async {
+    await _firestore
+        .collection("users")
+        .doc(client.id)
+        .update(client.toMap())
+        .then((value) {
+      Navigator.pop(context);
+      showSuccessMessage(context, " Profile Updated successfully ");
+    });
+  }
+
+  void updateAdmin(Admin admin, BuildContext context) async {
+    await _firestore
+        .collection("users")
+        .doc(admin.id)
+        .update(admin.toMap())
+        .then((value) {
+      Navigator.pop(context);
+      showSuccessMessage(context, " Profile Updated successfully ");
+    });
+  }
+
+  void updateDriver(Driver driver, BuildContext context) async {
+    await _firestore
+        .collection("users")
+        .doc(driver.id)
+        .update(driver.toMap())
+        .then((value) {
+      Navigator.pop(context);
+      showSuccessMessage(context, " Profile Updated successfully ");
+    });
+  }
+
+  updateUserEmail(BuildContext context, User user, String email,
+      auth.AuthCredential credentaial) async {
+    final cred =
+        await _auth.currentUser!.reauthenticateWithCredential(credentaial);
+
+    await cred.user!.updateEmail(email).whenComplete(() async {
+      user.email = _auth.currentUser!.email!;
+      await _firestore
+          .collection("users")
+          .doc(user.id)
+          .update({"email": email}).then((value) {
+        Navigator.pop(context);
+        showSuccessMessage(context, " Email Updated successfully ");
+      });
+    });
+  }
+
+  updateUserPassword(BuildContext context, User user, String password,
+      auth.AuthCredential credentaial) async {
+    final cred =
+        await _auth.currentUser!.reauthenticateWithCredential(credentaial);
+
+    await cred.user!.updatePassword(password).whenComplete(() async {
+      Navigator.pop(context);
+      showSuccessMessage(context, " Email Updated successfully ");
     });
   }
 }
