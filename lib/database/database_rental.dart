@@ -1,4 +1,5 @@
 import 'package:bus_location/core/communMethods.dart';
+import 'package:bus_location/entities/location.dart';
 import 'package:bus_location/entities/rental.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,17 +12,20 @@ class DatabaseRental {
   final _firestore = FirebaseFirestore.instance;
   final _storage = FirebaseStorage.instance;
 
-  Future<void> createReservation(
-      BuildContext context, String clientId, busId, date, double fee) async {
+  Future<void> createReservation(BuildContext context, busId, date, double fee,
+      Location start, Location destination, int totalPrice) async {
     try {
       showLoadingDialog(context);
       final rentId = Uuid().v4();
       final Rental rental = Rental(
+          start: start,
+          destination: destination,
           id: rentId,
           date: date,
           fee: fee,
+          totalPrice: totalPrice,
           status: "waiting",
-          client_id: clientId,
+          client_id: _auth.currentUser != null ? _auth.currentUser!.uid : "",
           bus_id: busId);
 
       await _firestore
@@ -33,6 +37,8 @@ class DatabaseRental {
         showSuccessMessage(context, "request sent successfully");
       });
     } catch (e) {
+      print(e);
+
       showErrorMessage(context, "error sending request!");
       Navigator.pop(context);
     }
@@ -57,14 +63,25 @@ class DatabaseRental {
   }
 
   Future<void> acceptRejectReservation(
-      BuildContext context, String id, String status) async {
+      BuildContext context, String id, String status, String busId) async {
     try {
       showLoadingDialog(context);
 
       await _firestore
           .collection("rental")
           .doc(id)
-          .update({"status": status}).whenComplete(() {
+          .update({"status": status}).whenComplete(() async {
+        if (status == "accepted") {
+          await _firestore
+              .collection("bus")
+              .doc(busId)
+              .update({"status": "rented"});
+        } else {
+          await _firestore
+              .collection("bus")
+              .doc(busId)
+              .update({"status": "waiting for rent"});
+        }
         Navigator.pop(context);
       });
     } catch (e) {
@@ -95,7 +112,7 @@ class DatabaseRental {
       String userId) async {
     return _firestore
         .collection("rental")
-        .where("user_id", isEqualTo: userId)
+        .where("client_id", isEqualTo: userId)
         .snapshots();
   }
 

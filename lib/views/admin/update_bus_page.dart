@@ -54,7 +54,7 @@ class _AddBusPageState extends State<UpdateBusPage> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          "Add Bus",
+          "Update Bus",
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.orange,

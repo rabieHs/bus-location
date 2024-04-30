@@ -31,7 +31,7 @@ class _DriversPageState extends State<DriversPage> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          "Admins",
+          "Drivers",
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.orange,
@@ -138,7 +138,11 @@ class _DriversPageState extends State<DriversPage> {
                                       ],
                                     ));
                           },
-                          leading: Icon(Icons.person),
+                          leading: Image.asset(
+                            "assets/images/driver.png",
+                            width: 40,
+                            height: 40,
+                          ),
                           title: Text(driver.name),
                           subtitle: Text(driver.email),
                           trailing: CircleAvatar(

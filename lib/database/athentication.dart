@@ -68,6 +68,19 @@ class DatabaseAuthentication {
     }
   }
 
+  Future<User> getUserById(String uid) async {
+    final result = await _firestore.collection("users").doc(uid).get();
+    final userData = result.data()!;
+
+    if (userData["type"] == "admin") {
+      return Admin.fromMap(userData);
+    } else if (userData["type"] == "driver") {
+      return Driver.fromMap(userData);
+    } else {
+      return Client.fromMap(userData);
+    }
+  }
+
   Future<User> getUser() async {
     final result =
         await _firestore.collection("users").doc(_auth.currentUser!.uid).get();

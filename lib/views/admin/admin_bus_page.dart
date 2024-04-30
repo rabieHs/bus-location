@@ -186,9 +186,10 @@ class _AdminBusPageState extends State<AdminBusPage> {
                                         ));
                               },
                               leading: bus.images!.isEmpty
-                                  ? Icon(
-                                      Icons.bus_alert,
-                                      size: 40,
+                                  ? Image.asset(
+                                      "assets/images/bus_icon.png",
+                                      width: 40,
+                                      height: 40,
                                     )
                                   : Image.network(
                                       bus.images!.first,
@@ -269,9 +270,10 @@ class _AdminBusPageState extends State<AdminBusPage> {
                                         ));
                               },
                               leading: bus.images!.isEmpty
-                                  ? Icon(
-                                      Icons.bus_alert,
-                                      size: 40,
+                                  ? Image.asset(
+                                      "assets/images/bus_icon.png",
+                                      width: 40,
+                                      height: 40,
                                     )
                                   : Image.network(
                                       bus.images!.first,
