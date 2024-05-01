@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 
 import '../../entities/user.dart';
 import '../../models/driver.dart';
+import '../client/client_profile_page.dart';
 
 class AdminsBusReservationsRequestPage extends StatefulWidget {
   const AdminsBusReservationsRequestPage({super.key});
@@ -20,6 +21,14 @@ class AdminsBusReservationsRequestPage extends StatefulWidget {
 class _AdminsBusReservationsRequestPageState
     extends State<AdminsBusReservationsRequestPage> {
   Stream<QuerySnapshot<Map<String, dynamic>>>? getRequestsStream;
+  List<String> busFilterTypes = [
+    "all",
+    "waiting",
+    "accepted",
+    "refused",
+  ];
+  int selectedIndex = 0;
+  final searchController = TextEditingController();
 
   Future<Client> setUserFromID(
     String clientID,
@@ -48,6 +57,21 @@ class _AdminsBusReservationsRequestPageState
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.orange,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ClientProfilePage()));
+              },
+              child: Icon(
+                Icons.person_rounded,
+                color: Colors.white,
+              ),
+            ),
+          )
+        ],
       ),
       body: Column(
         children: [
@@ -84,6 +108,85 @@ class _AdminsBusReservationsRequestPageState
                   ],
                 )
               ],
+            ),
+          ),
+          Container(
+            height: 50,
+            width: MediaQuery.of(context).size.width / 1.2,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: busFilterTypes.length,
+              itemBuilder: ((context, index) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GestureDetector(
+                    onTap: () async {
+                      selectedIndex = index;
+                      if (index == 0) {
+                        getRequestsStream = await DatabaseRental().getRental();
+                      } else {
+                        getRequestsStream = await DatabaseRental()
+                            .getRentalWithFilter(busFilterTypes[index]);
+                      }
+                      setState(() {});
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                          border: index == selectedIndex
+                              ? null
+                              : Border.all(width: 1.5, color: Colors.orange),
+                          color: index == selectedIndex
+                              ? Colors.orange
+                              : Colors.white,
+                          borderRadius: BorderRadius.circular(5)),
+                      height: 30,
+                      child: Center(
+                        child: Text(
+                          busFilterTypes[index],
+                          style: TextStyle(
+                            color: index == selectedIndex
+                                ? Colors.white
+                                : Colors.orange,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+          Container(
+            height: 60,
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 30),
+              child: TextFormField(
+                onChanged: (value) async {
+                  if (value.isNotEmpty) {
+                    getRequestsStream =
+                        await DatabaseRental().getRentalWithSearch(value);
+                  } else {
+                    selectedIndex = 0;
+                    getRequestsStream = await DatabaseRental().getRental();
+                  }
+                  setState(() {});
+                },
+                validator: (valeur) {
+                  if (valeur == null || valeur.isEmpty) {
+                    return "please fill the field !";
+                  }
+                },
+                controller: searchController,
+                decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.search),
+                    contentPadding: EdgeInsets.only(bottom: 5, left: 20),
+                    labelText: "search",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    )),
+              ),
             ),
           ),
           StreamBuilder(

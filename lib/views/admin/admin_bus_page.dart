@@ -2,6 +2,7 @@ import 'package:bus_location/database/database_bus.dart';
 import 'package:bus_location/entities/bus.dart';
 import 'package:bus_location/views/admin/add_bus_page.dart';
 import 'package:bus_location/views/admin/update_bus_page.dart';
+import 'package:bus_location/views/client/client_profile_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -45,6 +46,21 @@ class _AdminBusPageState extends State<AdminBusPage> {
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.orange,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ClientProfilePage()));
+              },
+              child: Icon(
+                Icons.person_rounded,
+                color: Colors.white,
+              ),
+            ),
+          )
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -134,7 +150,17 @@ class _AdminBusPageState extends State<AdminBusPage> {
                     }
                     if (result.data == null) {
                       return Center(
-                        child: CircularProgressIndicator(),
+                        child: Text(""),
+                      );
+                    }
+                    if (!result.hasData) {
+                      return Center(
+                        child: Text(""),
+                      );
+                    }
+                    if (result.data!.docs.isEmpty) {
+                      return Center(
+                        child: Text(""),
                       );
                     } else {
                       List<Bus> busList = result.data!.docs.map((doc) {
@@ -218,7 +244,17 @@ class _AdminBusPageState extends State<AdminBusPage> {
                     }
                     if (result.data == null) {
                       return Center(
-                        child: CircularProgressIndicator(),
+                        child: Text(""),
+                      );
+                    }
+                    if (!result.hasData) {
+                      return Center(
+                        child: Text(""),
+                      );
+                    }
+                    if (result.data!.docs.isEmpty) {
+                      return Center(
+                        child: Text(""),
                       );
                     } else {
                       List<Bus> busList = result.data!.docs.map((doc) {

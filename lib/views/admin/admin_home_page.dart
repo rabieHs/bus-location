@@ -37,8 +37,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
           BottomNavigationBarItem(icon: Icon(Icons.key), label: "Reservations"),
           BottomNavigationBarItem(
               icon: Icon(Icons.directions_bus), label: "Bus"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.directions), label: "Drivers"),
+          BottomNavigationBarItem(icon: Icon(Icons.explore), label: "Drivers"),
           BottomNavigationBarItem(
               icon: Icon(Icons.admin_panel_settings), label: "Admins"),
         ],

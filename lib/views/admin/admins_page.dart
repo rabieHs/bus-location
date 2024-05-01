@@ -3,6 +3,8 @@ import 'package:bus_location/models/admin.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import '../client/client_profile_page.dart';
+
 class AdminsPage extends StatefulWidget {
   AdminsPage({super.key});
 
@@ -28,6 +30,21 @@ class _AdminsPageState extends State<AdminsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ClientProfilePage()));
+              },
+              child: Icon(
+                Icons.person_rounded,
+                color: Colors.white,
+              ),
+            ),
+          )
+        ],
         centerTitle: true,
         title: Text(
           "Admins",

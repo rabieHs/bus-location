@@ -1,10 +1,12 @@
 import 'package:bus_location/core/communMethods.dart';
+import 'package:bus_location/entities/bus.dart';
 import 'package:bus_location/entities/location.dart';
 import 'package:bus_location/entities/rental.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
 class DatabaseRental {
@@ -122,5 +124,41 @@ class DatabaseRental {
         .collection("rental")
         .where("status", isEqualTo: filter)
         .snapshots();
+  }
+
+  Future<Stream<QuerySnapshot<Map<String, dynamic>>>> getRentalWithSearch(
+      String searchQuery) async {
+    return _firestore
+        .collection("rental")
+        .where("id", isGreaterThanOrEqualTo: searchQuery)
+        .snapshots();
+  }
+
+  Future<List<Rental>> getRentalForDriver() async {
+    //DateFormat.yMMMd().parse()
+    List<Rental> rentals = [];
+    List<Bus> myBus;
+
+    final busResult = await _firestore
+        .collection("bus")
+        .where("driver_id", isEqualTo: _auth.currentUser!.uid)
+        .get();
+
+    myBus = busResult.docs.map((e) => Bus.fromMap(e.data())).toList();
+    print(myBus.length);
+    print(myBus.first.id);
+
+    for (int i = 0; i < myBus.length; i++) {
+      final rentalResult = await _firestore
+          .collection("rental")
+          .where("bus_id", isEqualTo: myBus[i].id)
+          .get();
+      print(rentalResult.docs.first.data());
+      return rentalResult.docs.map((rental) {
+        return Rental.fromMap(rental.data());
+      }).toList();
+    }
+
+    return rentals;
   }
 }

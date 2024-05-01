@@ -122,7 +122,7 @@ class _ClientAddReservationPageState extends State<ClientAddReservationPage> {
                   ),
                   DropdownButtonFormField<Location>(
                       decoration: InputDecoration(
-                          labelText: "Start",
+                          labelText: "Destination",
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
                           )),

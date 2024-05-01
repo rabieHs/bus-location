@@ -28,7 +28,7 @@ class Driver extends User {
       "lastname": lastname,
       "email": email,
       "type": type,
-      "isVerfied": isVerified
+      "isVerified": isVerified
     };
   }
 }

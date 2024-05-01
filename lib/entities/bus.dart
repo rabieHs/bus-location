@@ -10,7 +10,7 @@ class Bus {
   final String description;
   Bus({
     this.images,
-    this.status = "for rent",
+    this.status = "waiting for rent",
     this.driver_id,
     required this.description,
     required this.id,

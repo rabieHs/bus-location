@@ -190,11 +190,11 @@ class _RegisterPageState extends State<RegisterPage> {
                               if (userType == "admin") {
                                 showWarningMessage(
                                     context, "Waiting for varefication...");
+                                Navigator.pop(context);
                               } else if (userType == "driver") {
-                                Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            DriverHomePage()));
+                                showWarningMessage(
+                                    context, "Waiting for varefication...");
+                                Navigator.pop(context);
                               } else {
                                 Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(

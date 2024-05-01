@@ -45,7 +45,7 @@ class _MyAppState extends State<MyApp> {
       } else if (_user is Driver) {
         isDriver = false;
         if (_user.isVerified) {
-          isAdminVerified = true;
+          isDriverVerfied = true;
         }
       } else {
         isClient = true;

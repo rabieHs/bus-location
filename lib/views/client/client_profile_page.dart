@@ -25,6 +25,7 @@ class _ClientProfilePageState extends State<ClientProfilePage> {
     nameController.text = user!.name;
     lastNameController.text = user!.lastname;
     emailController.text = user!.email;
+    emailController.text = user!.email;
     setState(() {});
   }
 
@@ -38,6 +39,7 @@ class _ClientProfilePageState extends State<ClientProfilePage> {
   final lastNameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final newPasswordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -316,19 +318,43 @@ class _ClientProfilePageState extends State<ClientProfilePage> {
                         context: context,
                         builder: (context) => AlertDialog(
                               title: Center(child: Text("update Password")),
-                              content: TextFormField(
-                                obscureText: true,
-                                validator: (valeur) {
-                                  if (valeur == null || valeur.isEmpty) {
-                                    return "please fill the field !";
-                                  }
-                                },
-                                controller: passwordController,
-                                decoration: InputDecoration(
-                                    labelText: "Password",
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(15),
-                                    )),
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  TextFormField(
+                                    obscureText: true,
+                                    validator: (valeur) {
+                                      if (valeur == null || valeur.isEmpty) {
+                                        return "please fill the field !";
+                                      }
+                                    },
+                                    controller: passwordController,
+                                    decoration: InputDecoration(
+                                        labelText: "Old password",
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                        )),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  TextFormField(
+                                    obscureText: true,
+                                    validator: (valeur) {
+                                      if (valeur == null || valeur.isEmpty) {
+                                        return "please fill the field !";
+                                      }
+                                    },
+                                    controller: newPasswordController,
+                                    decoration: InputDecoration(
+                                        labelText: "New Password",
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                        )),
+                                  ),
+                                ],
                               ),
                               actions: [
                                 MaterialButton(
@@ -354,7 +380,7 @@ class _ClientProfilePageState extends State<ClientProfilePage> {
                                           .updateUserPassword(
                                               context,
                                               user!,
-                                              passwordController.text,
+                                              newPasswordController.text,
                                               credential);
                                     }
                                   },
@@ -380,7 +406,9 @@ class _ClientProfilePageState extends State<ClientProfilePage> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
                 color: primaryColor,
-                onPressed: () async {},
+                onPressed: () async {
+                  DatabaseAuthentication().signOut(context);
+                },
                 child: Container(
                   width: 170,
                   height: 45,

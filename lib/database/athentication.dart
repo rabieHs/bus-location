@@ -5,6 +5,7 @@ import 'package:bus_location/entities/user.dart';
 import 'package:bus_location/models/admin.dart';
 import 'package:bus_location/models/client.dart';
 import 'package:bus_location/models/driver.dart';
+import 'package:bus_location/views/login_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 
@@ -191,5 +192,10 @@ class DatabaseAuthentication {
       Navigator.pop(context);
       showSuccessMessage(context, " Email Updated successfully ");
     });
+  }
+
+  signOut(BuildContext context) async {
+    await _auth.signOut().whenComplete(() => Navigator.of(context)
+        .pushReplacement(MaterialPageRoute(builder: (context) => LoginPage())));
   }
 }
