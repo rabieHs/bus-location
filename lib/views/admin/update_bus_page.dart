@@ -32,6 +32,12 @@ class _AddBusPageState extends State<UpdateBusPage> {
 
   getDrivers() async {
     drivers = await DatabaseAuthentication().getDriverList();
+    drivers.add(Driver(
+      name: "No Driver",
+      lastname: "",
+      email: "",
+      id: "id",
+    ));
     setState(() {});
   }
 
@@ -79,6 +85,7 @@ class _AddBusPageState extends State<UpdateBusPage> {
                         return "please fill the field !";
                       }
                     },
+                    enabled: false,
                     controller: idController,
                     decoration: InputDecoration(
                         labelText: "Bus Id",

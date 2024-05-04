@@ -1,3 +1,4 @@
+import 'package:bus_location/core/communMethods.dart';
 import 'package:bus_location/core/consts.dart';
 import 'package:bus_location/entities/bus.dart';
 import 'package:bus_location/views/client/client_add_reservation_page.dart';
@@ -204,7 +205,9 @@ class _ClientFeedPageState extends State<ClientBusDetailsPage> {
                               height: 15,
                             ),
                             Text(
-                              widget.bus.status,
+                              widget.bus.status == "waiting for rent"
+                                  ? "Waiting"
+                                  : widget.bus.status,
                               style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
@@ -223,10 +226,15 @@ class _ClientFeedPageState extends State<ClientBusDetailsPage> {
                       borderRadius: BorderRadius.circular(10)),
                   color: primaryColor,
                   onPressed: () async {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => ClientAddReservationPage(
-                              bus: widget.bus,
-                            )));
+                    if (widget.bus.status == "rented") {
+                      showWarningMessage(
+                          context, "bus was rented for now try later ...");
+                    } else {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => ClientAddReservationPage(
+                                bus: widget.bus,
+                              )));
+                    }
                   },
                   child: Container(
                     width: 170,

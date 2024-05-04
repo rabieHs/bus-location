@@ -44,7 +44,7 @@ class _DriverBusPageState extends State<DriverBusPage> {
               builder: (context, result) {
                 if (result.hasError) {
                   return Center(
-                    child: Text("error occured !"),
+                    child: Text("no Rental founs !"),
                   );
                 }
                 if (result.data == null || result.data!.isEmpty) {

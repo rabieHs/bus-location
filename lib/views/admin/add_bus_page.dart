@@ -189,7 +189,7 @@ class _AddBusPageState extends State<AddBusPage> {
                     },
                     controller: descriptionController,
                     decoration: InputDecoration(
-                        labelText: "Energy",
+                        labelText: "Description",
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
                         )),

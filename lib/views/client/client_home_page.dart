@@ -12,8 +12,8 @@ class ClientHomePage extends StatefulWidget {
 }
 
 class _ClientHomePageState extends State<ClientHomePage> {
-  List<Widget> adminPages = [
-    ClientBusPage(),
+  List<Widget> clientPages = [
+    ClientBusPage(), //liste des bus
     ClientHistoryPage(),
     ClientProfilePage(),
   ];
@@ -37,7 +37,7 @@ class _ClientHomePageState extends State<ClientHomePage> {
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
         ],
       ),
-      body: adminPages[currentIndex],
+      body: clientPages[currentIndex],
     );
   }
 }

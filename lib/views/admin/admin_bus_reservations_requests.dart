@@ -25,7 +25,7 @@ class _AdminsBusReservationsRequestPageState
     "all",
     "waiting",
     "accepted",
-    "refused",
+    "rejected",
   ];
   int selectedIndex = 0;
   final searchController = TextEditingController();

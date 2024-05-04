@@ -207,7 +207,7 @@ class _ClientHistoryPageState extends State<ClientHistoryPage> {
                                                       fontSize: 13),
                                                 ),
                                                 Text(
-                                                  "${rental.fee.toInt()} Dt",
+                                                  "${rental.totalPrice} Dt",
                                                   style: TextStyle(
                                                       color:
                                                           Colors.grey.shade600),

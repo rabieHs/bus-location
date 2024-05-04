@@ -36,16 +36,22 @@ class DatabaseAuthentication {
 
   Future<bool> registerUser(String name, String lastname, String email,
       String type, String? phone, String password) async {
+    //creation du compte
     final resultat = await _auth.createUserWithEmailAndPassword(
         email: email, password: password);
+    //verification si le resultat contient un utilisateur
     if (resultat.user != null) {
+      //type ==> par
       if (type == "admin") {
+        //creation ==>class  admin
         final admin = Admin(
             phone: phone!,
             name: name,
             lastname: lastname,
             email: email,
             id: resultat.user!.uid);
+
+        // enregistrement des donnees ssur la base de donees (firabse)
         await _firestore.collection("users").doc(admin.id).set(admin.toMap());
         return true;
       } else if (type == "driver") {
