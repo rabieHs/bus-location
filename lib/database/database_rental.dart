@@ -2,6 +2,7 @@ import 'package:bus_location/core/communMethods.dart';
 import 'package:bus_location/entities/bus.dart';
 import 'package:bus_location/entities/location.dart';
 import 'package:bus_location/entities/rental.dart';
+import 'package:bus_location/models/client.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -108,6 +109,34 @@ class DatabaseRental {
 
   Future<Stream<QuerySnapshot<Map<String, dynamic>>>> getRental() async {
     return _firestore.collection("rental").snapshots();
+  }
+
+  Future<bool> checkAvailability(DateTime date) async {
+    List<Rental> rentals = await getAllRentals();
+
+    bool acceptedRentals = rentals.any((rental) {
+      final DateTime rental_date = DateFormat.yMMMd().parse(rental.date);
+      if (rental_date == date) {
+        return false;
+      } else {
+        return true;
+      }
+    });
+
+    return acceptedRentals;
+  }
+
+  Future<List<Rental>> getRentalForClient(Client client) async {
+    final result = await _firestore
+        .collection("rental")
+        .where("client_id", isEqualTo: client.id)
+        .get();
+    return result.docs.map((e) => Rental.fromMap(e.data())).toList();
+  }
+
+  Future<List<Rental>> getAllRentals() async {
+    final result = await _firestore.collection("rental").get();
+    return result.docs.map((e) => Rental.fromMap(e.data())).toList();
   }
 
   Future<Stream<QuerySnapshot<Map<String, dynamic>>>> getUserRental(

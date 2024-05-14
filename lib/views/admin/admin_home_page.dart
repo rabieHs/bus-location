@@ -1,6 +1,7 @@
 import 'package:bus_location/core/consts.dart';
 import 'package:bus_location/views/admin/admin_bus_page.dart';
 import 'package:bus_location/views/admin/admin_bus_reservations_requests.dart';
+import 'package:bus_location/views/admin/admin_clients_page.dart';
 import 'package:bus_location/views/admin/admins_page.dart';
 import 'package:bus_location/views/admin/drivers_page.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,8 @@ class _AdminHomePageState extends State<AdminHomePage> {
     AdminsBusReservationsRequestPage(),
     AdminBusPage(),
     DriversPage(),
-    AdminsPage()
+    AdminsPage(),
+    AdminClientsPage(),
   ];
   int currentIndex = 0;
 
@@ -40,6 +42,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
           BottomNavigationBarItem(icon: Icon(Icons.explore), label: "Drivers"),
           BottomNavigationBarItem(
               icon: Icon(Icons.admin_panel_settings), label: "Admins"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Clients"),
         ],
       ),
       body: adminPages[currentIndex],

@@ -111,6 +111,15 @@ class DatabaseAuthentication {
         .snapshots();
   }
 
+  Future<Stream<QuerySnapshot<Map<String, dynamic>>>> getUsersWithSearch(
+      String type, String query) async {
+    return _firestore
+        .collection("users")
+        .where("type", isEqualTo: type)
+        .where("name", isGreaterThanOrEqualTo: query)
+        .snapshots();
+  }
+
   Future<List<Driver>> getDriverList() async {
     final result = await _firestore
         .collection("users")

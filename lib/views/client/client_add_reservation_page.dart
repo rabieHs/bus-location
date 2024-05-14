@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:bus_location/core/communMethods.dart';
 import 'package:bus_location/core/consts.dart';
 import 'package:bus_location/database/database_rental.dart';
 import 'package:bus_location/entities/location.dart';
@@ -27,6 +28,7 @@ class _ClientAddReservationPageState extends State<ClientAddReservationPage> {
   String? busType;
   Location? start;
   Location? destination;
+  DateTime? selectedDate;
 
   double distance = 0.0;
   calculateDistace(Location start, Location destination) async {
@@ -84,6 +86,7 @@ class _ClientAddReservationPageState extends State<ClientAddReservationPage> {
                       if (date != null) {
                         setState(() {
                           dateController.text = DateFormat.yMMMd().format(date);
+                          selectedDate = date;
                         });
                       }
                     },
@@ -163,14 +166,20 @@ class _ClientAddReservationPageState extends State<ClientAddReservationPage> {
                     color: primaryColor,
                     onPressed: () async {
                       if (formKey.currentState!.validate()) {
-                        await DatabaseRental().createReservation(
-                            context,
-                            widget.bus.id,
-                            dateController.text,
-                            widget.bus.fee,
-                            start!,
-                            destination!,
-                            (distance * widget.bus.fee).toInt());
+                        if (await DatabaseRental()
+                            .checkAvailability(selectedDate!)) {
+                          await DatabaseRental().createReservation(
+                              context,
+                              widget.bus.id,
+                              dateController.text,
+                              widget.bus.fee,
+                              start!,
+                              destination!,
+                              (distance * widget.bus.fee).toInt());
+                        } else {
+                          showErrorMessage(
+                              context, "bus not avaiable at the selected date");
+                        }
                       }
                     },
                     child: Container(

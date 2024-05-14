@@ -1,5 +1,6 @@
 import 'package:bus_location/core/communMethods.dart';
 import 'package:bus_location/core/consts.dart';
+import 'package:bus_location/database/database_rental.dart';
 import 'package:bus_location/entities/bus.dart';
 import 'package:bus_location/views/client/client_add_reservation_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -226,15 +227,10 @@ class _ClientFeedPageState extends State<ClientBusDetailsPage> {
                       borderRadius: BorderRadius.circular(10)),
                   color: primaryColor,
                   onPressed: () async {
-                    if (widget.bus.status == "rented") {
-                      showWarningMessage(
-                          context, "bus was rented for now try later ...");
-                    } else {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => ClientAddReservationPage(
-                                bus: widget.bus,
-                              )));
-                    }
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => ClientAddReservationPage(
+                              bus: widget.bus,
+                            )));
                   },
                   child: Container(
                     width: 170,
