@@ -1,4 +1,5 @@
 import 'package:bus_location/core/communMethods.dart';
+import 'package:bus_location/database/database_bus.dart';
 import 'package:bus_location/entities/bus.dart';
 import 'package:bus_location/entities/location.dart';
 import 'package:bus_location/entities/rental.dart';
@@ -111,8 +112,8 @@ class DatabaseRental {
     return _firestore.collection("rental").snapshots();
   }
 
-  Future<bool> checkAvailability(DateTime date) async {
-    List<Rental> rentals = await getAllRentals();
+  Future<bool> checkAvailability(DateTime date, Bus bus) async {
+    List<Rental> rentals = await getAllRentalsByBus(bus.id);
 
     bool acceptedRentals = rentals.any((rental) {
       final DateTime rental_date = DateFormat.yMMMd().parse(rental.date);
@@ -126,6 +127,22 @@ class DatabaseRental {
     return acceptedRentals;
   }
 
+  void checkAndUpdateBusRental() async {
+    List<Rental> rentals = await getAllRentals();
+
+    rentals.forEach((rental) async {
+      DateTime rentalDate = DateFormat.yMMMd().parse(rental.date);
+
+      if (rentalDate.month > DateTime.now().month ||
+          rentalDate.day > DateTime.now().day) {
+        await _firestore
+            .collection("bus")
+            .doc(rental.bus_id)
+            .update({"status": "waiting for rent"});
+      }
+    });
+  }
+
   Future<List<Rental>> getRentalForClient(Client client) async {
     final result = await _firestore
         .collection("rental")
@@ -136,6 +153,14 @@ class DatabaseRental {
 
   Future<List<Rental>> getAllRentals() async {
     final result = await _firestore.collection("rental").get();
+    return result.docs.map((e) => Rental.fromMap(e.data())).toList();
+  }
+
+  Future<List<Rental>> getAllRentalsByBus(String id) async {
+    final result = await _firestore
+        .collection("rental")
+        .where("bus_id", isEqualTo: id)
+        .get();
     return result.docs.map((e) => Rental.fromMap(e.data())).toList();
   }
 
@@ -174,15 +199,12 @@ class DatabaseRental {
         .get();
 
     myBus = busResult.docs.map((e) => Bus.fromMap(e.data())).toList();
-    print(myBus.length);
-    print(myBus.first.id);
 
     for (int i = 0; i < myBus.length; i++) {
       final rentalResult = await _firestore
           .collection("rental")
           .where("bus_id", isEqualTo: myBus[i].id)
           .get();
-      print(rentalResult.docs.first.data());
       return rentalResult.docs.map((rental) {
         return Rental.fromMap(rental.data());
       }).toList();

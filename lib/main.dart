@@ -1,5 +1,6 @@
 import 'package:bus_location/core/consts.dart';
 import 'package:bus_location/database/athentication.dart';
+import 'package:bus_location/database/database_rental.dart';
 import 'package:bus_location/entities/user.dart';
 import 'package:bus_location/firebase_options.dart';
 import 'package:bus_location/models/admin.dart';
@@ -57,6 +58,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     getUser();
+    DatabaseRental().checkAndUpdateBusRental();
 
     super.initState();
   }
